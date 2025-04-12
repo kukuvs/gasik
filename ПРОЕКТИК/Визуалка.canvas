@@ -1,0 +1,27 @@
+{
+	"nodes":[
+		{"id":"477223d777ef077c","type":"text","text":"[[Студент]](спец)","x":-450,"y":-336,"width":250,"height":60,"color":"1"},
+		{"id":"1ebbd5af0335e3c9","x":-700,"y":-220,"width":250,"height":60,"color":"1","type":"text","text":"[[Профиль]]"},
+		{"id":"4d707577e0e09d67","x":-700,"y":-100,"width":250,"height":60,"color":"2","type":"text","text":"[[Новсти]]"},
+		{"id":"8f01ddc53cd76ed1","x":-700,"y":20,"width":250,"height":60,"color":"2","type":"text","text":"[[Список мероприятий]]"},
+		{"id":"672b0a0ce506dd7e","type":"text","text":"Пользователи","x":-200,"y":-500,"width":250,"height":50,"color":"1"},
+		{"id":"b2c7999a64ce5053","type":"text","text":"[[Компания]]","x":50,"y":-336,"width":250,"height":60,"color":"1"},
+		{"id":"06287f23b4c457f6","x":-200,"y":-220,"width":250,"height":60,"color":"1","type":"text","text":"Главная"},
+		{"id":"1859ab8e55effdfb","x":-700,"y":-500,"width":250,"height":60,"color":"#0033ff","type":"text","text":"[[Поинты]]"},
+		{"id":"3905c5b7a14a9dab","x":300,"y":-220,"width":250,"height":60,"color":"1","type":"text","text":"Список студентов"},
+		{"id":"34ac9b2c503ed5e5","x":648,"y":-220,"width":250,"height":60,"color":"1","type":"text","text":"Профиль студента"},
+		{"id":"4972faba0f7cb165","x":300,"y":-100,"width":250,"height":60,"color":"3","type":"text","text":"Конструктор новостей и мероприятий"}
+	],
+	"edges":[
+		{"id":"6f2fe228388fe78c","fromNode":"672b0a0ce506dd7e","fromSide":"bottom","toNode":"b2c7999a64ce5053","toSide":"top"},
+		{"id":"fae45cc6663afe2a","fromNode":"672b0a0ce506dd7e","fromSide":"bottom","toNode":"477223d777ef077c","toSide":"top"},
+		{"id":"0d61844b1b0ce5b6","fromNode":"477223d777ef077c","fromSide":"bottom","toNode":"1ebbd5af0335e3c9","toSide":"right"},
+		{"id":"6403a57e1b277e21","fromNode":"477223d777ef077c","fromSide":"bottom","toNode":"4d707577e0e09d67","toSide":"right"},
+		{"id":"48f1dc50228c11ad","fromNode":"477223d777ef077c","fromSide":"bottom","toNode":"8f01ddc53cd76ed1","toSide":"right"},
+		{"id":"8f024854e173a976","fromNode":"477223d777ef077c","fromSide":"bottom","toNode":"06287f23b4c457f6","toSide":"left"},
+		{"id":"9b8f60f9942b5f6a","fromNode":"b2c7999a64ce5053","fromSide":"bottom","toNode":"06287f23b4c457f6","toSide":"right"},
+		{"id":"a95485afe0fa8c21","fromNode":"b2c7999a64ce5053","fromSide":"bottom","toNode":"3905c5b7a14a9dab","toSide":"left"},
+		{"id":"b1175c48b6dcf3f6","fromNode":"3905c5b7a14a9dab","fromSide":"right","toNode":"34ac9b2c503ed5e5","toSide":"left"},
+		{"id":"b1b469454689c8f8","fromNode":"b2c7999a64ce5053","fromSide":"bottom","toNode":"4972faba0f7cb165","toSide":"left"}
+	]
+}
