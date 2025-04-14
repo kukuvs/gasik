@@ -143,13 +143,19 @@ class Event(models.Model):
     - title: название события (до 100 символов)
     - description: описание события (до 2000 символов)
     - start: дата начала
-    - end: дата окончания (должна быть позже start)
+    - end: дата окончания
+    - organizer: компания, организующая мероприятие (только Corporation)
     - users: участники события (связь через промежуточную модель EventUser)
     """
     title = models.CharField("Название события", max_length=100)
     description = models.TextField("Описание", max_length=2000)
     start = models.DateField("Дата начала")
     end = models.DateField("Дата окончания")
+    organizer = models.ForeignKey(
+        'Corporation',
+        on_delete=models.CASCADE,
+        verbose_name="Организатор"
+    )
     users = models.ManyToManyField(
         User, 
         through='EventUser', 
@@ -161,7 +167,6 @@ class Event(models.Model):
         verbose_name = "Событие"
         verbose_name_plural = "События"
         constraints = [
-            # Ограничение: начало события раньше, чем окончание
             CheckConstraint(check=Q(start__lt=F('end')), name='start_before_end')
         ]
         indexes = [
@@ -177,7 +182,7 @@ class EventUser(models.Model):
     Промежуточная модель для связи пользователей и событий.
     
     Поля:
-    - user: ссылка на модель User
+    - user: ссылка на модель User (участник события)
     - event: ссылка на модель Event
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
@@ -193,6 +198,8 @@ class EventUser(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.email} - {self.event.title}"
+
+
 
 
 class Project(models.Model):
@@ -263,10 +270,10 @@ class Corporation(models.Model):
     Модель компании.
     
     Поля:
-    - name: название компании (строка, уникальное)
+    - name: название компании (уникальное)
     - description: описание компании
     - email: почта компании (уникальное)
-    - password: хешированный пароль компании (до 128 символов)
+    - password: хешированный пароль
     """
     name = models.CharField("Название компании", max_length=255, unique=True)
     description = models.TextField("Описание")

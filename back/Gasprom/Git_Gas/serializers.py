@@ -1,7 +1,5 @@
-# Git_Gas/serializers.py
-
 from rest_framework import serializers
-from .models import SkillUser, User, Project
+from .models import SkillUser, User, Project, Event, EventUser, Corporation
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
@@ -16,18 +14,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'name', 'phone', 'age', 'password1', 'password2')
 
     def validate(self, attrs):
-        """
-        Проверяем, что оба пароля совпадают.
-        """
         if attrs.get('password1') != attrs.get('password2'):
             raise serializers.ValidationError("Пароли не совпадают.")
         return attrs
 
     def create(self, validated_data):
-        """
-        Создаем пользователя, устанавливая хешированный пароль.
-        """
-        validated_data.pop('password2')  # Удаляем подтверждение пароля
+        validated_data.pop('password2')
         password = validated_data.pop('password1')
         user = User.objects.create(**validated_data)
         user.set_password(password)
@@ -38,21 +30,42 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     """
     Сериализатор для модели Project.
-    Поля:
-        - title: название проекта (до 30 символов)
-        - description: описание (до 1000 символов)
-        - date_proj: дата проекта
-        - url: ссылка на проект
-        - main_user: основной пользователь (ID), можно заменить на вложенный сериализатор, если нужно
+    Поле main_user устанавливается автоматически, поэтому передавать его не надо.
     """
+    main_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    
     class Meta:
         model = Project
         fields = ('id', 'title', 'description', 'date_proj', 'url', 'main_user')
+
 
 class SkillUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillUser
         fields = ['user', 'skill']
-        
+
+
 class AddSkillByTitleSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=30)
+
+
+# Сериализатор для событий
+class EventSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели Event.
+    Поле organizer указывает на компанию (его устанавливает только авторизованный представитель компании).
+    """
+    organizer = serializers.PrimaryKeyRelatedField(read_only=True)
+    
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start', 'end', 'organizer')
+
+
+class EventUserSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для регистрации пользователя на мероприятие.
+    """
+    class Meta:
+        model = EventUser
+        fields = ('user', 'event')
