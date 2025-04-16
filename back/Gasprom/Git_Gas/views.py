@@ -51,22 +51,24 @@ class UserViewSet(viewsets.GenericViewSet):
         try:
             skill = Skill.objects.get(id=skill_id)
         except Skill.DoesNotExist:
-            return Response({'error': 'Навык не найден'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Навык не найден'}, status=status.HTTP_400_BAD_REQUEST)
         if SkillUser.objects.filter(user=request.user, skill=skill).exists():
             return Response({'message': 'Навык уже добавлен'}, status=status.HTTP_200_OK)
         SkillUser.objects.create(user=request.user, skill=skill)
         return Response({'message': 'Навык добавлен пользователю'}, status=status.HTTP_201_CREATED)
+
 
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def add_skill_by_title(self, request):
         serializer = AddSkillByTitleSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         title = serializer.validated_data['title'].strip().capitalize()
-        skill, _ = Skill.objects.get_or_create(title=title)
+        skill, created = Skill.objects.get_or_create(title=title)
         if SkillUser.objects.filter(user=request.user, skill=skill).exists():
             return Response({'message': f'Навык "{title}" уже добавлен'}, status=status.HTTP_200_OK)
         SkillUser.objects.create(user=request.user, skill=skill)
-        return Response({'message': f'Навык "{title}" успешно добавлен'}, status=status.HTTP_201_CREATED)
+        return Response('Навык успешно добавлен', status=status.HTTP_201_CREATED)
+
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -93,9 +95,12 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)  # Валидация полей, вернёт 400 при ошибках
         if not hasattr(request.user, 'corporation'):
             return Response({"error": "Только компания может создавать мероприятия."}, status=status.HTTP_403_FORBIDDEN)
         return super().create(request, *args, **kwargs)
+
 
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user.corporation)

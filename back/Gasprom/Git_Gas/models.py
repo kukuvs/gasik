@@ -40,18 +40,25 @@ class User(AbstractBaseUser, PermissionsMixin):
     - age: возраст (целое число, до 2-х цифр)
     - rating: рейтинг (целое число, до 5 цифр)
     - notifications: получать уведомления
-    - password: хешированное значение пароля (до 128 символов)
     - date_joined: дата регистрации
     """
     name = models.CharField("Имя", max_length=100)
 
+    corporation = models.ForeignKey(
+        'Corporation',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Компания"
+    )
+    
     phone = models.CharField(
         "Телефон", 
         max_length=20, 
         blank=True,
         validators=[
             RegexValidator(
-                regex=r'^\+?[\d\-]+$',
+                regex=r'^\+?[\d\-]+',
                 message="Телефон должен содержать цифры, символы '+' и '-'"
             )
         ]
@@ -70,7 +77,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         validators=[MinValueValidator(0), MaxValueValidator(99999)]
     )
     notifications = models.BooleanField("Уведомления", default=True)
-    password = models.CharField("Пароль", max_length=128)  # Хранится в виде хеша
     date_joined = models.DateTimeField("Дата регистрации", default=timezone.now)
 
     is_active = models.BooleanField("Активен", default=True)

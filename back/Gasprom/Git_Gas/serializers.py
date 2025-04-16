@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SkillUser, User, Project, Event, EventUser, Corporation
+from .models import SkillUser, User, Project, Event, EventUser
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
@@ -37,6 +37,22 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('id', 'title', 'description', 'date_proj', 'url', 'main_user')
+
+    def to_internal_value(self, data):
+        allowed = set(self.fields.keys())
+        received = set(data.keys())
+        extra_fields = received - allowed
+        if extra_fields:
+            raise serializers.ValidationError({field: "Некорректное поле." for field in extra_fields})
+        return super().to_internal_value(data)
+    
+    def validate(self, attrs):
+        allowed_fields = set(self.fields.keys())
+        for field in attrs.keys():
+            if field not in allowed_fields:
+                raise serializers.ValidationError({field: "Некорректное поле."})
+        return super().validate(attrs)
+
 
 
 class SkillUserSerializer(serializers.ModelSerializer):
